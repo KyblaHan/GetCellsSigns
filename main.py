@@ -1,16 +1,10 @@
+import src.sings_worker as sw
+import src.segment as sg
 
+#
+# sw_1 = sw.sings_worker(r"data/segmented_cells_images")
+# sw_1.work()
+# sw_1.to_csv()
 
-import sings_detector as sd
-
-
-path = r"C:\_Programming\_DataSets\Multiclass\augData\test\Monocyte\1 (125).bmp.png"
-
-
-sd = sd.SingsDetector(path)
-
-print("S=", sd.get_area())
-print("P=", sd.get_perimeter())
-print("SC=", sd.get_shape_coefficient())
-print("Средняя яркость по RGB:", sd.get_average_brightness_rgb())
-print("СКО", sd.get_std())
-
+seg = sg.segment(r"C:/_Programming/GetCellsSigns/data/input_images/18бласт.png")
+seg.create_histogram()

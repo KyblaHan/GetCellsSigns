@@ -10,11 +10,27 @@ from skimage.color import rgb2gray
 from skimage.filters import sobel
 
 
-class SingsDetector:
+class sings_detector:
+    path = "data/temp/temp_input.bmp"
+    columns = ["area", "perimeter", "shape_coefficient", "average_brightness_rgb", "std"]
+
     def __init__(self, path_to_img):
         self.contours, self.hierarchy = None, None
-        self.path = path_to_img
+        self.base_path = path_to_img
+        self.black_to_white()
         self.get_contour()
+
+    def black_to_white(self):
+        img = cv2.imread(self.base_path)
+        black = np.where((img[:, :, 0] <= 0) & (img[:, :, 1] <= 0) & (img[:, :, 2] <= 0))
+        img[black] = (255, 255, 255)
+        cv2.imwrite(self.path, img)
+
+    def get_all_signs(self):
+        output_data = [self.get_area(), self.get_perimeter(), self.get_shape_coefficient(),
+                       self.get_average_brightness_rgb(), self.get_std()]
+
+        return output_data
 
     def get_area(self):
         return cv2.contourArea(self.contours[0])
@@ -32,17 +48,16 @@ class SingsDetector:
 
         segment = segmentation.watershed(elevation_map, markers)
 
-
-        io.imsave("temp.bmp", segment)
+        io.imsave("data/temp/temp.bmp", segment)
         # cv2.imwrite("temp.bmp", segment)
 
-        image_g = cv2.imread("temp.bmp")
+        image_g = cv2.imread("data/temp/temp.bmp")
 
         edged = cv2.Canny(image_g, 10, 15)
 
         self.contours, self.hierarchy = cv2.findContours(edged, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
-        os.remove("temp.bmp")
+        os.remove("data/temp/temp.bmp")
 
     def get_perimeter(self):
         return cv2.arcLength(self.contours[0], True)
@@ -60,7 +75,8 @@ class SingsDetector:
 
         for row in range(0, rows):
             for col in range(0, cols):
-                if (img[row, col, 0] == 255 and img[row, col, 1] == 255 and img[row, col, 2] == 255) or (img[row, col, 0] == 0 and img[row, col, 1] == 0 and img[row, col, 2] == 0):
+                if (img[row, col, 0] == 255 and img[row, col, 1] == 255 and img[row, col, 2] == 255) or (
+                        img[row, col, 0] == 0 and img[row, col, 1] == 0 and img[row, col, 2] == 0):
                     white_pix_count += 1
                 else:
                     g += img[row, col, 1]
@@ -83,7 +99,8 @@ class SingsDetector:
 
         for row in range(0, rows):
             for col in range(0, cols):
-                if img[row, col, 0] == 255 and img[row, col, 1] == 255 and img[row, col, 2] == 255:
+                if img[row, col, 0] == 255 and img[row, col, 1] == 255 and img[row, col, 2] == 255 or (
+                        img[row, col, 0] == 0 and img[row, col, 1] == 0 and img[row, col, 2] == 0):
                     white_pix_count += 1
                 else:
                     r.append(img[row, col, 1])

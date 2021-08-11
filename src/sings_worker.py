@@ -4,6 +4,9 @@ import pandas as pd
 
 
 class sings_worker:
+    """
+    Класс построения отчетов и поиска признаков.
+    """
     images = []
     df = []
 
@@ -12,12 +15,27 @@ class sings_worker:
         self.get_list_images()
 
     def get_list_images(self):
+        """
+        Получение списка всех изображений в папке path_to_folder.
+        :return:
+        """
         path = pathlib.Path(self.path_to_folder)
         all_image_paths = list(path.glob('*'))
         self.images = [str(path) for path in all_image_paths]
 
+    def create_report(self):
+        """
+        Поиск признаков для всех изображений в папке и генерация отчета.
+        :return:
+        """
+        self.get_all_sings()
+        self.to_csv()
 
-    def work(self):
+    def get_all_sings(self):
+        """
+        Поиск признаков для всех изображений в папке.
+        :return: DataFrame - перечень признаков для каждой клетки
+        """
         self.df = []
         output = []
         for img in self.images:
@@ -32,7 +50,11 @@ class sings_worker:
         return self.df
 
     def to_csv(self):
+        """
+        Запись в CSV.
+        :return:
+        """
         if self.df is None:
-            self.work()
+            self.get_all_sings()
 
         self.df.to_csv("data/reports/output_sings.csv")

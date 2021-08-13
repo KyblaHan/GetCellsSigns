@@ -1,12 +1,13 @@
 import os
+import sys
+sys.path.append('src/segment')
 
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-import src.segment as sg
-import src.sings_worker as sw
-
-import src.main_window
+import segment as sg
+import sings_worker as sw
+import main_window
 import sys
 
 
@@ -41,7 +42,7 @@ class mywindow(QtWidgets.QMainWindow):
         msgBox.exec()
 
     def btn_sings_clicked(self):
-        sw.sings_worker("data/segmented_cells_images").create_report()
+        sw.sings_worker("../data/segmented_cells_images").create_report()
         self.notification("Признаки расчитаны")
 
     def btn_segment_clicked(self):
@@ -54,7 +55,7 @@ class mywindow(QtWidgets.QMainWindow):
         max_p = float(self.ui.label_max.text())
         self.seg.test_contours(min_p, max_p)
 
-        pixmap_segment = QPixmap("data/temp/contours.bmp")
+        pixmap_segment = QPixmap("../data/temp/contours.bmp")
         resize_pixmap_segment = pixmap_segment.scaled(350, 350)
         self.ui.segmented_image.setPixmap(resize_pixmap_segment)
 

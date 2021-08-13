@@ -1,5 +1,5 @@
 import pathlib
-import src.sings_detector as sd
+import sings_detector as sd
 import pandas as pd
 
 

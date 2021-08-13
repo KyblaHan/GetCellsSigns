@@ -1,0 +1,5 @@
+pyuic5 ui/main_window.ui -o src/main_window.py
+
+docker build -f Dockerfile . -t test:t
+docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY test:t
+

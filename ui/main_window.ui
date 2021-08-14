@@ -95,9 +95,9 @@
       <widget class="QLineEdit" name="label_min"/>
      </item>
      <item row="1" column="2">
-      <widget class="QPushButton" name="btn_calc_mins">
+      <widget class="QPushButton" name="btn_get_hist">
        <property name="text">
-        <string>Перерасчет минимумов</string>
+        <string>Расчет гистограммы</string>
        </property>
       </widget>
      </item>

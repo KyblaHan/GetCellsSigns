@@ -3,3 +3,16 @@ pyuic5 ui/main_window.ui -o src/main_window.py
 docker build -f Dockerfile . -t test:t
 docker run -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY test:t
 
+
+pyinstaller --path src src/main_ui.py
+
+
+
+
+Сборка экзешника:
+    0. Если ранее осуществлялась сборка, удалить dist/mainUI
+    1. Выполниь команду: pyinstaller src/main_ui.py
+    2. Скопировать ProjectData в dist/mainUI
+    3. Готовый экзешник: dist/mainUI/mainUI.exe
+    4. В папке dist/mainUI - находятся все необходимые библиотеки
+

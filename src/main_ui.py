@@ -1,8 +1,6 @@
 import os
-import sys
-sys.path.append('src/segment')
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 import segment as sg
@@ -12,13 +10,11 @@ import sys
 
 
 class mywindow(QtWidgets.QMainWindow):
-
     img_path = ""
 
     def __init__(self):
-
         super(mywindow, self).__init__()
-        self.ui = src.main_window.Ui_MainWindow()
+        self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
 
         self.ui.btn_choise_image.clicked.connect(self.btn_choise_image_clicked)
@@ -27,6 +23,27 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.btn_contour.clicked.connect(self.btn_contour_clicked)
         self.ui.btn_segment.clicked.connect(self.btn_segment_clicked)
         self.ui.btn_sings.clicked.connect(self.btn_sings_clicked)
+        self.ui.btn_get_hist.clicked.connect(self.btn_get_hist_clicked)
+
+
+    def btn_get_hist_clicked(self):
+
+        if os.path.exists(self.img_path):
+            print("!")
+            pixmap_input_image = QPixmap(self.img_path)
+            resize_pixmap_input_image = pixmap_input_image.scaled(350, 350)
+            self.ui.input_image.setPixmap(resize_pixmap_input_image)
+
+            self.img_path = self.img_path
+            segment = sg.segment(self.img_path)
+            segment.create_histogram()
+
+            pixmap_hist = QPixmap(sg.segment.path_to_histogram)
+            self.ui.histogram.setPixmap(pixmap_hist)
+
+            self.print_mins()
+        else:
+            self.notification("Не выбрано изображение")
 
     def notification(self, text):
         """
@@ -42,7 +59,7 @@ class mywindow(QtWidgets.QMainWindow):
         msgBox.exec()
 
     def btn_sings_clicked(self):
-        sw.sings_worker("../data/segmented_cells_images").create_report()
+        sw.sings_worker("data/segmented_cells_images").create_report()
         self.notification("Признаки расчитаны")
 
     def btn_segment_clicked(self):
@@ -55,7 +72,7 @@ class mywindow(QtWidgets.QMainWindow):
         max_p = float(self.ui.label_max.text())
         self.seg.test_contours(min_p, max_p)
 
-        pixmap_segment = QPixmap("../data/temp/contours.bmp")
+        pixmap_segment = QPixmap("data/temp/contours.bmp")
         resize_pixmap_segment = pixmap_segment.scaled(350, 350)
         self.ui.segmented_image.setPixmap(resize_pixmap_segment)
 
@@ -74,19 +91,9 @@ class mywindow(QtWidgets.QMainWindow):
     def btn_choise_image_clicked(self):
         file_path = QFileDialog.getOpenFileName(self, "Выберите файл", "data/input_images")
         self.ui.path_to_image.setText(file_path[0])
-
-        pixmap_input_image = QPixmap(file_path[0])
-        resize_pixmap_input_image = pixmap_input_image.scaled(350, 350)
-        self.ui.input_image.setPixmap(resize_pixmap_input_image)
-
         self.img_path = file_path[0]
-        segment = sg.segment(file_path[0])
-        segment.create_histogram()
 
-        pixmap_hist = QPixmap(sg.segment.path_to_histogram)
-        self.ui.histogram.setPixmap(pixmap_hist)
 
-        self.print_mins()
 
     def print_mins(self):
         """
